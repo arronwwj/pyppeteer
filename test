@@ -1,0 +1,66 @@
+
+#Phatform: Windows 10
+
+#Python: 3.6.3
+
+#Pyppeteer: 0.0.25
+
+import asyncio
+
+import time
+
+from pyppeteer.launcher import launch
+
+
+async def main(url_taobao):
+
+    browser = await launch({
+        'headless': False,
+        'dumpio': True,
+        'args': [
+            '--disable-extensions',
+            '--hide-scrollbars',
+            '--disable-bundled-ppapi-flash',
+            '--mute-audio',
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-gpu',
+            # '--proxy-server=127.0.0.1:1080',
+            # '--window-size=10,10',
+            '--window-size=1266,850',  # 1366,850',
+        ],
+        'autoClose': False,
+        })
+
+    kword_text=' coat'
+
+    await search_Taobao(browser,url_taobao,kword_text)
+
+
+async def search_Taobao(browser,url_taobao,kword_text):
+
+    page_taobao=await browser.newPage()
+
+    await page_taobao.goto(url_taobao)
+
+    #print(await page_taobao.content())
+
+    await page_taobao.type('#q',kword_text)
+
+
+    #await page_taobao.keyboard.down('Control')
+
+    await page_taobao.click('#J_searchForm > input.submit')
+
+    #await page_taobao.keyboard.up('Control')
+
+
+if __name__ == '__main__':
+
+    print('Start')
+
+    url_taobao='https://uland.taobao.com/sem/tbsearch?refpid=mm_26632258_3504122_32538762&clk1=825d52a10bbc942743eab7b112354e96&keyword=%E5%A4%96%E5%A5%97&page=0'
+
+    loop = asyncio.get_event_loop()
+
+    loop.run_until_complete(main(url_taobao))
